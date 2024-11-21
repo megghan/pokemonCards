@@ -1,11 +1,30 @@
 
 const pokeApi = {}
 
+function convertPokeApiDetailToPokemon(pokeDetail){
+    const pokemon = new Pokemon()
+    pokemon.index = pokeDetail.order
+    pokemon.name = pokeDetail.name;
+    
+    const types = pokeDetail.types.map((typeSlot) => typeSlot.type.name)
+    const [type] = types
+
+    pokemon.types =  types
+    pokemon.type = type
+
+    pokemon.image = pokeDetail.sprites.other.dream_world.front_default
+
+    return pokemon;
+}
+
 pokeApi.getPokemonDetail = (pokemon) =>{
-    return fetch(pokemon.url).then((response) => response.json())}
+    return fetch(pokemon.url)
+        .then((response) => response.json())
+        .then(convertPokeApiDetailToPokemon)
+    }
 
 
-pokeApi.getPokemons =(offset = 0, limit =10) => { 
+pokeApi.getPokemons =(offset = 0, limit =20) => { 
     const url=`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
     
     return fetch(url)
@@ -15,12 +34,3 @@ pokeApi.getPokemons =(offset = 0, limit =10) => {
         .then((detailRequests) => Promise.all(detailRequests))
         .then((pokemonsDetails) => pokemonsDetails)
 }
-//Novamente usando a funçsão map podemos simplificar o código mapeando uma lista de requisições de detalhes dos pokemons
-// Promise.all([
-//     fetch("https://pokeapi.co/api/v2/pokemon/1"),
-//     fetch("https://pokeapi.co/api/v2/pokemon/2"),
-//     fetch("https://pokeapi.co/api/v2/pokemon/3"),
-//     fetch("https://pokeapi.co/api/v2/pokemon/4")
-// ]).then((results) => {
-//     console.log(results);
-// })
