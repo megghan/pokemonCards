@@ -19,10 +19,20 @@ function pokemonToHtmlList(pokemon){
 const pokemonList =document.getElementById("pokemonList");
 
 
-pokeApi.getPokemons().then((pokemons) => {
+pokeApi.getPokemons().then((pokemons = []) => {
         //debugger
-        for (let index = 0; index < pokemons.length; index++) {
-            const pokemon = pokemons[index];
-            pokemonList.innerHTML += pokemonToHtmlList(pokemon);        
-        }
+        pokemonList.innerHTML += pokemons.map(pokemonToHtmlList).join(""); 
+
+        // usamos a função map para não precisarmos desse for
+        //a map converte para uma lista de li e o join junta tudo sem o separador
+        //por fim concatemos tudo.
+        //
+        //<<<<<<codigo original>>>>>>
+        //
+        // const listItems = [];    
+        // for (let index = 0; index < pokemons.length; index++) {
+        //     const pokemon = pokemons[index];
+        //     listItems.push(pokemonToHtmlList(pokemon))
+        // }
+          
     })
