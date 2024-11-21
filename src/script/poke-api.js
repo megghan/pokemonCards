@@ -1,11 +1,26 @@
 
 const pokeApi = {}
 
+pokeApi.getPokemonDetail = (pokemon) =>{
+    return fetch(pokemon.url).then((response) => response.json())}
+
+
 pokeApi.getPokemons =(offset = 0, limit =10) => { 
     const url=`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
+    
     return fetch(url)
-    .then((response)=> response.json())
-        //o fetch é um processo assincrono e as outras partes do programa vão rodando até a resposta vir
-    .then((jsonBody) => jsonBody.results)
-    .catch((error) => console.log(error))
-}  
+        .then((response)=> response.json())
+        .then((jsonBody) => jsonBody.results)
+        .then((pokemons) => pokemons.map(pokeApi.getPokemonDetail))
+        .then((detailRequests) => Promise.all(detailRequests))
+        .then((pokemonsDetails) => pokemonsDetails)
+}
+//Novamente usando a funçsão map podemos simplificar o código mapeando uma lista de requisições de detalhes dos pokemons
+// Promise.all([
+//     fetch("https://pokeapi.co/api/v2/pokemon/1"),
+//     fetch("https://pokeapi.co/api/v2/pokemon/2"),
+//     fetch("https://pokeapi.co/api/v2/pokemon/3"),
+//     fetch("https://pokeapi.co/api/v2/pokemon/4")
+// ]).then((results) => {
+//     console.log(results);
+// })
